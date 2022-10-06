@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.IO;
+using System.Text.Json;
 using System.Xml.Linq;
 
 namespace Labb2
@@ -7,39 +8,42 @@ namespace Labb2
     {
         static void Main(string[] args)
         {
-            List<Item> inventory = new();
-            List<Customer> customerBase = new();
+            var customerBase = new List<Customer>();
+            var inventory = new List<Item>();
 
-            Customer c1 = new("Daniel","123");
-            Gold c2 = new("Goran", "qwerty");
-            Silver c3 = new("Dragan", "abcdefg");
-            Bronze c4 = new("Miodrag", "Sljiva67");
+            var customerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Customers.json");
+            var inventoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Inventory.json");
 
-            customerBase.Add(c1);
-            customerBase.Add(c2);
-            customerBase.Add(c3);
-            customerBase.Add(c4);
+            if (!File.Exists(customerPath))
+                Misc.InitShopCustomers();
 
-            Item apple = new("apple", 440.5f);
-            c4.Cart.Add(apple);
+            if (!File.Exists(inventoryPath))
+                Misc.InitShopInventory();
 
-
-            
-            string customerBaseJson = JsonSerializer.Serialize(customerBase, new JsonSerializerOptions()
-                {WriteIndented = true});
-
-            Console.WriteLine(customerBaseJson);
-            Save(customerBaseJson);
-        }
-        
-        static void Save(string jsonStr)
-        {
-            var desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var jsonPath = Path.Combine(desktopDir, "save.json");
-
-            using (StreamWriter sw = new StreamWriter(jsonPath))
+            using StreamReader srC = new StreamReader(customerPath);
             {
-                sw.WriteLine(jsonStr);
+                try
+                {
+                    customerBase = Misc.DeserializeCustomer(srC.ReadToEnd());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to parse JSON, please resolve Json syntax or delete file to restore default customers \n");
+                    throw;
+                }
+            }
+
+            using StreamReader srI = new StreamReader(inventoryPath);
+            {
+                try
+                {
+                    inventory = JsonSerializer.Deserialize<List<Item>>(srI.ReadToEnd());
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Failed to parse JSON, please resolve Json syntax or delete file to restore default Inventory \n");
+                    throw;
+                }
             }
         }
     }

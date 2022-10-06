@@ -8,6 +8,8 @@ namespace Labb2
 {
     internal class Silver : Customer
     {
+        public override string Type { get; } = nameof(Silver);
+
         public Silver(string name, string password) : base(name, password)
         {
 

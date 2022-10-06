@@ -8,6 +8,8 @@ namespace Labb2
 {
     internal class Gold : Customer
     {
+        public override string Type { get; } = nameof(Gold);
+
         public Gold(string name, string password) : base(name, password)
         {
 

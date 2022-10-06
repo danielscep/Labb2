@@ -8,6 +8,7 @@ namespace Labb2
 {
     internal class Customer
     {
+        public virtual string Type { get; } = nameof(Customer);
         public string Name { get; }
         public string Password { get; }
         public List<Item> Cart { get; }
@@ -15,7 +16,6 @@ namespace Labb2
         public Customer(string name, string password)
         {
             Cart = new List<Item>();
-
             Name = name;
             Password = password;
         }
