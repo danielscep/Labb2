@@ -15,6 +15,7 @@ namespace Labb2
         public Customer(string name, string password)
         {
             Cart = new List<Item>();
+
             Name = name;
             Password = password;
         }
