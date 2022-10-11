@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text.Json;
+using System.Transactions;
 using System.Xml.Linq;
 
 namespace Labb2
@@ -8,23 +9,21 @@ namespace Labb2
     {
         static void Main(string[] args)
         {
-            var customerBase = new List<Customer>();
-            var inventory = new List<Item>();
-
             var customerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Customers.json");
             var inventoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Inventory.json");
 
             if (!File.Exists(customerPath))
-                Misc.InitShopCustomers();
+                Shop.InitShopCustomers();
 
             if (!File.Exists(inventoryPath))
-                Misc.InitShopInventory();
+                Shop.InitShopInventory();
 
             using StreamReader srC = new StreamReader(customerPath);
             {
                 try
                 {
-                    customerBase = Misc.DeserializeCustomer(srC.ReadToEnd());
+                    List<Customer> customerBase = Shop.DeserializeCustomer(srC.ReadToEnd());
+                    Customer.SetCustomers(customerBase);
                 }
                 catch (Exception e)
                 {
@@ -37,7 +36,8 @@ namespace Labb2
             {
                 try
                 {
-                    inventory = JsonSerializer.Deserialize<List<Item>>(srI.ReadToEnd());
+                    List<Item> inventory = JsonSerializer.Deserialize<List<Item>>(srI.ReadToEnd());
+                    Item.SetInventory(inventory);
                 }
                 catch (Exception e)
                 {
@@ -45,6 +45,9 @@ namespace Labb2
                     throw;
                 }
             }
+
+            ShopMenu.StartMenu();
+
         }
     }
 }

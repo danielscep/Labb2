@@ -5,16 +5,16 @@ using System.Xml.Linq;
 
 namespace Labb2
 {
-    internal class Misc
+    internal class Shop
     {
         public static List<Customer> GetDefaultCustomers()
         {
             List<Customer> customerBase = new();
 
-            Customer c1 = new("Daniel", "123");
-            Gold c2 = new("Goran", "qwerty");
-            Silver c3 = new("Dragan", "abcdefg");
-            Bronze c4 = new("Miodrag", "Sljiva67");
+            Customer c1 = new("Knatte", "123");
+            Gold c2 = new("Fnatte", "321");
+            Silver c3 = new("Tjatte", "213");
+            Bronze c4 = new("Daniel", "qwerty");
 
             customerBase.Add(c1);
             customerBase.Add(c2);
