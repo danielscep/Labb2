@@ -10,7 +10,7 @@ namespace Labb2
     {
         public override string Type { get; } = nameof(Gold);
 
-        public Gold(string name, string password) : base(name, password)
+        public Gold(string user, string pass) : base(user, pass)
         {
 
         }

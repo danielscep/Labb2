@@ -60,6 +60,16 @@ public class ShopMenu
             rPass = Console.ReadLine();
         }
 
+        try
+        {
+            Customer.AddCustomer(user, pass);
+        }
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine("User already exists");
+            Console.ReadKey(true);
+            Register();
+        }
 
     }
 

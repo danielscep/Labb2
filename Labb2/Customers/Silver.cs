@@ -10,7 +10,7 @@ namespace Labb2
     {
         public override string Type { get; } = nameof(Silver);
 
-        public Silver(string name, string password) : base(name, password)
+        public Silver(string user, string pass) : base(user, pass)
         {
 
         }
