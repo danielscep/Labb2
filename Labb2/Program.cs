@@ -12,7 +12,7 @@ namespace Labb2
             Customer.InitShopCustomers();
             Item.InitShopInventory();
 
-            //ShopMenu.StartMenu();
+            ShopMenu.StartMenu();
 
         }
     }

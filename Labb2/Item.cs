@@ -12,7 +12,7 @@ namespace Labb2
         public string Name { get; set; }
         public float Price { get; set; }
         public int Quantity { get; set; }
-        private static List<Item> Inventory { get; set; }
+        public static List<Item> Inventory { get; set; }
 
         public static void InitShopInventory()
         {
@@ -21,15 +21,7 @@ namespace Labb2
             {
                 using (StreamReader srI = new StreamReader(inventoryPath))
                 {
-                    try
-                    {
-                        Inventory = JsonSerializer.Deserialize<List<Item>>(srI.ReadToEnd());
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine("Failed to parse JSON, please resolve Json syntax or delete file to restore default Inventory \n");
-                        throw;
-                    }
+                    Inventory = JsonSerializer.Deserialize<List<Item>>(srI.ReadToEnd());
                 }
             }
             else
@@ -43,6 +35,7 @@ namespace Labb2
                 inventory.Add(new Item("bread", 82, 20f));
                 inventory.Add(new Item("ham", 47, 28.9f));
 
+                Inventory = inventory;
                 Write(Serialize(inventory));
             }
         }
@@ -64,6 +57,11 @@ namespace Labb2
             {
                 WriteIndented = true
             });
+        }
+
+        public static void Save()
+        {
+            Write(Serialize(Inventory));
         }
 
         public Item(string name, int quantity, float price)

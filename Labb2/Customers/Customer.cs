@@ -11,18 +11,57 @@ namespace Labb2
     internal class Customer
     {
         public virtual string Type { get; } = nameof(Customer);
+        public virtual float Discount { get; } = 1;
         public string User { get; private set; }
         public string Pass { get; private set; }
-        public List<Item> Cart { get; private set; }
-        public static List<Customer> ?Customers { get; private set; }
+        public List<Item> Cart { get; set; }
+        public static List<Customer> ?Customers { get; set; }
+        public int Currency { get; set; }
+
+        public Object[,] Currencies;
 
         public Customer(string user, string pass)
         {
             Cart = new List<Item>();
             User = user;
             Pass = pass;
+            Currency = 0;
+            Currencies = new Object[4,2]
+            {
+                { "SEK", 1 },
+                { "EUR", 0.091f },
+                { "NOK", 0.95f },
+                { "USD", 0.088f }
+            };
+
         }
 
+        public static void Buy(Customer customer, string itemName, int qty)
+        {
+            for (int i = 0; i < Item.Inventory.Count; i++)
+            {
+                if (Item.Inventory[i].Name.ToLower() == itemName.ToLower())
+                {
+                    Item invItem = Item.Inventory[i];
+
+                    if (invItem.Quantity - qty < 0)
+                    {
+                        qty = invItem.Quantity;
+                        invItem.Quantity = 0;
+                    }
+                    else
+                    {
+                        invItem.Quantity -= qty;
+                    }
+
+                    Item newItem = new Item(invItem.Name, qty, invItem.Price);
+                    customer.Cart.Add(newItem);
+
+                    Write(Serialize(Customers));
+                    Item.Save();
+                }
+            }
+        }
         public static Customer AddCustomer(string user, string pass)
         {
             foreach (var customer in Customers)
@@ -60,7 +99,7 @@ namespace Labb2
                 {
                     try
                     {
-                        Customers = Deserialize(srC.ReadToEnd());
+                        Customers = Deserialize();
                     }
                     catch (Exception e)
                     {
@@ -92,8 +131,6 @@ namespace Labb2
                 Customers = customers;
                 Write(Serialize(Customers));
             }
-
-            Console.WriteLine(Serialize(Customers));
         }
 
         private static void Write(string jsonStr)
@@ -107,7 +144,12 @@ namespace Labb2
 
         }
 
-        public static string Serialize(List<Customer> jsonStr)
+        public static void Save()
+        {
+            Write(Serialize(Customers));
+        }
+
+        private static string Serialize(List<Customer> jsonStr)
         {
             return JsonSerializer.Serialize(jsonStr, new JsonSerializerOptions()
             {
@@ -115,8 +157,16 @@ namespace Labb2
             });
         }
 
-        public static List<Customer> Deserialize(string json)
+        private static List<Customer> Deserialize()
         {
+            string json;
+            var customerPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Customers.json");
+
+            using (StreamReader srC = new StreamReader(customerPath))
+            {
+                json = srC.ReadToEnd();
+            }
+
             var customerBase = new List<Customer>();
             using (var jsonDoc = JsonDocument.Parse(json))
             {
